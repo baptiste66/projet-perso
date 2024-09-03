@@ -1,0 +1,30 @@
+
+.background-header{display: flex;
+    background-color:#C74754 ;
+    justify-content: space-between;
+    
+}
+.background-header img{
+    width: 15%;
+   
+}
+a{ display: flex;
+    color:  white;
+    align-items: center;
+  margin-left: 100px;
+  margin-right: 100px;
+  cursor: pointer;
+}
+.main-nav-item{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: underline;
+}
+.background-content{
+    background-color: #F9A6AE;
+   
+}
+h1{
+    margin-top: 0;
+}
