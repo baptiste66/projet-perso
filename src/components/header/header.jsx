@@ -7,11 +7,14 @@ export default function Header(){
      
     <header> <nav className="main-nav">
 <div className="background-header">
-<Link className="main-nav-item" to="/signin">
+<Link className="main-nav-item" to="/Login">
 <a>Connexion</a>
 </Link>
-<img src={logo} alt="logo"/> 
+<Link className="main-nav-item" to="/Index">
+<img src={logo} alt="logo"/> </Link>
+<Link className="main-nav-item" to="/Signin">
 <a>S'inscrire</a>
+</Link>
 </div>
 </nav>
 </header>
