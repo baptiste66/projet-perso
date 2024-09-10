@@ -36,6 +36,7 @@ a:hover{
 
 main {
     background-color: #F9A6AE;
+    padding-bottom: 50px;
     
 }
 .background-content img{
@@ -54,6 +55,61 @@ margin-right: 500px;
 .content{
     margin-top: 150px;
     margin-left: 70px;
-    
     margin-right: 70px;
+}
+h1{
+    color: white;
+}
+.title{display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 30px;
+    margin-bottom: 0;
+}
+.form-group label {display: flex;
+    justify-content: center;
+    color: white;
+    font-size: large;
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+.form-group input {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: large;
+}
+.form-group select {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: large;
+}
+.signin-form .signin-button{
+    background-color: #C74754;
+    color: white;
+    border-color: #C74754;
+    box-shadow: none;
+    font-size: large;
+    display: flex;
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: 15px;
+  
+}
+.login-button{
+    background-color: #C74754;
+    color: white;
+    border-color: #C74754;
+    box-shadow: none;
+    font-size: large;
+    display: flex;
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: 15px;
+}
+.birthdate input{
+    width: 220px;
 }
