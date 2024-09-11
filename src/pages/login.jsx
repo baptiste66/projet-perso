@@ -1,36 +1,38 @@
 import React, { useState } from 'react';
 import Header from '../components/header/header';
 import { useAuth } from '../components/auth/auth';
+import { useNavigate } from 'react-router-dom';
 import "../style/index.css";
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [message, setMessage] = useState(''); 
-    const { login } = useAuth();
-  
-    const handleLogin = async (e) => {
-      e.preventDefault();
-      try {
-        const response = await fetch('http://localhost:3001/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-  
-        const data = await response.json();
-        if (response.ok) {
-          login(data.token); 
-          setMessage('Connexion réussie !'); 
-        } else {
-          setMessage('Échec de la connexion');
-        }
-      } catch (error) {
-        console.error('Erreur:', error);
-        setMessage('Erreur lors de la connexion'); 
-      }
-    };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:3001/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (response.ok && data.token) {
+                  localStorage.setItem('token', data.token);
+        login(data.token); 
+        setMessage('Connexion réussie !');
+        navigate('/index');
+      } else {
+        setMessage('Échec de la connexion');
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      setMessage('Erreur lors de la connexion');
+    }
+  };
     return (
         <>
             <Header />
