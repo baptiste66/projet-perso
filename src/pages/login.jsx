@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
 import Header from '../components/header/header';
+import { useAuth } from '../components/auth/auth';
 import "../style/index.css";
 
-function Login() {
+const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const response = await fetch('http://localhost:3000/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
+    const [message, setMessage] = useState(''); 
+    const { login } = useAuth();
+  
+    const handleLogin = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch('http://localhost:3001/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
         });
-
+  
         const data = await response.json();
-
         if (response.ok) {
-            setMessage('Connexion réussie !');
-           
+          login(data.token); 
+          setMessage('Connexion réussie !'); 
         } else {
-            setMessage(data.message || 'Une erreur est survenue.');
+          setMessage('Échec de la connexion');
         }
+      } catch (error) {
+        console.error('Erreur:', error);
+        setMessage('Erreur lors de la connexion'); 
+      }
     };
 
     return (
@@ -34,7 +37,7 @@ function Login() {
             <main>
                 <div className="background-content">
                     <span className='title'><h1>Bienvenue !</h1></span>
-                    <form className="login-form" onSubmit={handleSubmit}>
+                    <form className="login-form" onSubmit={handleLogin}> {/* Correction ici */}
                         <div className="form-group">
                             <label htmlFor="email">Adresse e-mail :</label>
                             <input
@@ -70,5 +73,3 @@ function Login() {
 }
 
 export default Login;
-
-  

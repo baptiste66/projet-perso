@@ -25,10 +25,36 @@ function Signin() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validation des champs
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setMessage('Adresse email invalide');
+            return;
+        }
+
+        if (!password || password.length < 8) {
+            setMessage('Le mot de passe doit contenir au moins 8 caractères');
+            return;
+        }
+
+        if (!birthdate || new Date(birthdate) >= new Date('2015-01-01')) {
+            setMessage('La date de naissance doit être antérieure à 2015');
+            return;
+        }
+        if (!educationLevel) {
+            setMessage("niveaux d'étude manquante");
+            return;
+        }
+
+        if (!profileImage) {
+            setMessage('Image de profil manquante');
+            return;
+        }
+
         try {
             // signup = user.service
-            const data = await signup(email, password, birthdate, address, educationLevel,profileImage);
-            if (data.success) { 
+            const data = await signup(email, password, birthdate, address, educationLevel, profileImage);
+            if (data.success) {
                 setMessage('Inscription réussie !');
             } else {
                 setMessage(data.message || 'Une erreur est survenue.');
@@ -128,8 +154,8 @@ function Signin() {
                 </div>
             </main>
             <footer>
-          <h3>Nos réseaux :</h3>
-         </footer>
+                <h3>Nos réseaux :</h3>
+            </footer>
         </>
     );
 }

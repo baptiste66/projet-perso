@@ -18,3 +18,4 @@ async function signup(email, password, birthdate, address, educationLevel, profi
 }
 
 export default signup;
+
