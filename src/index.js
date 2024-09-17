@@ -6,8 +6,9 @@ import Index from './pages/index';
 import Login from './pages/login';
 import Signin from './pages/signin';
 import Payment from './pages/payment';
-import { AuthProvider } from './components/auth/auth';
+import { AuthProvider } from './components/context/context';
 import PrivateRoute from './components/privateRoutes/privateRoutes';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

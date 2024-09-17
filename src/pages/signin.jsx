@@ -16,7 +16,7 @@ function Signin() {
         const file = e.target.files[0];
         
         if (file && file.size > 50 * 1024 * 1024) { // 50 MB
-            setMessage('La taille de l\'image dépasse la limite autorisée de 50 Mo.');
+            setMessage('La taille de limage dépasse la limite autorisée de 50 Mo.');
             return;
         }
         
@@ -26,7 +26,7 @@ function Signin() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validation des champs
+        // regex
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             setMessage('Adresse email invalide');
             return;
@@ -128,12 +128,12 @@ function Signin() {
                                 required 
                             >
                                 <option value="">Sélectionnez votre classe</option>
-                                <option value="6ème">6ème</option>
-                                <option value="5ème">5ème</option>
-                                <option value="4ème">4ème</option>
-                                <option value="3ème">3ème</option>
-                                <option value="2nd">2nd</option>
-                                <option value="1ère">1ère</option>
+                                <option value="sixième">6ème</option>
+                                <option value="cinquième">5ème</option>
+                                <option value="quatrième">4ème</option>
+                                <option value="troisième">3ème</option>
+                                <option value="seconde">2nd</option>
+                                <option value="première">1ère</option>
                                 <option value="Terminal">Terminal</option>
                             </select>
                         </div>
@@ -152,6 +152,7 @@ function Signin() {
                     </form>
                     {message && <p>{message}</p>}
                 </div>
+                
             </main>
             <footer>
                 <h3>Nos réseaux :</h3>
