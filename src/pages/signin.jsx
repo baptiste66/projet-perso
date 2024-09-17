@@ -2,69 +2,100 @@ import React, { useState } from 'react';
 import Header from '../components/header/header';
 import "../style/index.css";
 import signup from '../services/user.service';
+import { useAuth } from '../components/context/context';
+import { useNavigate } from 'react-router-dom';
+
 
 function Signin() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [birthdate, setBirthdate] = useState('');
-    const [address, setAddress] = useState('');
-    const [educationLevel, setEducationLevel] = useState('');
-    const [profileImage, setProfileImage] = useState(null);
+    // State for Elèves form
+    const [studentEmail, setStudentEmail] = useState('');
+    const [studentPassword, setStudentPassword] = useState('');
+    const [studentBirthdate, setStudentBirthdate] = useState('');
+    const [studentAddress, setStudentAddress] = useState('');
+    const [studentEducationLevel, setStudentEducationLevel] = useState('');
+    const [studentProfileImage, setStudentProfileImage] = useState(null);
+    
+    // State for Professeurs form
+    const [teacherEmail, setTeacherEmail] = useState('');
+    const [teacherPassword, setTeacherPassword] = useState('');
+    const [teacherBirthdate, setTeacherBirthdate] = useState('');
+    const [teacherAddress, setTeacherAddress] = useState('');
+    const [teacherEducationLevel, setTeacherEducationLevel] = useState('');
+    const [teacherProfileImage, setTeacherProfileImage] = useState(null);
+    
     const [message, setMessage] = useState('');
-
-    const handleImageChange = (e) => {
+    const { login } = useAuth();
+    const navigate= useNavigate()
+    const handleImageChange = (e, setProfileImage) => {
         const file = e.target.files[0];
-        
         if (file && file.size > 50 * 1024 * 1024) { // 50 MB
-            setMessage('La taille de limage dépasse la limite autorisée de 50 Mo.');
+            setMessage('La taille de l\'image dépasse la limite autorisée de 50 Mo.');
             return;
         }
-        
         setProfileImage(file); // Set the file object directly
     };
 
-    const handleSubmit = async (e) => {
+    // Function to handle profile image change for both forms
+    const handleSubmit = async (e, userType) => {
         e.preventDefault();
-
-        // regex
+        let email, password, birthdate, address, educationLevel, profileImage;
+      
+        // Set form data based on userType
+        if (userType === 'student') {
+          email = studentEmail;
+          password = studentPassword;
+          birthdate = studentBirthdate;
+          address = studentAddress;
+          educationLevel = studentEducationLevel;
+          profileImage = studentProfileImage;
+        } else if (userType === 'teacher') {
+          email = teacherEmail;
+          password = teacherPassword;
+          birthdate = teacherBirthdate;
+          address = teacherAddress;
+          educationLevel = teacherEducationLevel;
+          profileImage = teacherProfileImage;
+        }
+      
+        // Basic validation
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setMessage('Adresse email invalide');
-            return;
+          setMessage('Adresse email invalide');
+          return;
         }
-
         if (!password || password.length < 8) {
-            setMessage('Le mot de passe doit contenir au moins 8 caractères');
-            return;
+          setMessage('Le mot de passe doit contenir au moins 8 caractères');
+          return;
         }
-
         if (!birthdate || new Date(birthdate) >= new Date('2015-01-01')) {
-            setMessage('La date de naissance doit être antérieure à 2015');
-            return;
+          setMessage('La date de naissance doit être antérieure à 2015');
+          return;
         }
         if (!educationLevel) {
-            setMessage("niveaux d'étude manquante");
-            return;
+          setMessage("Niveau d'étude manquant");
+          return;
         }
-
         if (!profileImage) {
-            setMessage('Image de profil manquante');
-            return;
+          setMessage('Image de profil manquante');
+          return;
         }
-
+      
         try {
-            // signup = user.service
-            const data = await signup(email, password, birthdate, address, educationLevel, profileImage);
-            if (data.success) {
-                setMessage('Inscription réussie !');
-            } else {
-                setMessage(data.message || 'Une erreur est survenue.');
-            }
+          const data = await signup(email, password, birthdate, address, educationLevel, profileImage);
+          console.log('Réponse complète de l\'API:', data);
+          console.log('Jeton reçu:', data.token);
+      
+          if (data.token) {
+            await login(data.token);
+            console.log('Jeton stocké:', localStorage.getItem('token'));
+            navigate('/index'); 
+          } else {
+            setMessage(data.message || 'Une erreur est survenue.');
+          }
+        } catch (error) {
+          console.error('Erreur lors de l\'inscription:', error);
+          setMessage('Une erreur est survenue.');
         }
-        catch (error) {
-            console.error('Erreur lors de l\'inscription:', error);
-            setMessage('Une erreur est survenue.');
-        }
-    };
+      };
 
     return (
         <>
@@ -72,87 +103,167 @@ function Signin() {
             <main>
                 <div className="background-content">
                     <span className='title'><h1>Bienvenue !</h1></span>
-                    <form className="signin-form" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="email">Adresse e-mail :</label>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required 
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password">Mot de passe :</label>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required 
-                            />
-                        </div>
+                    <div className='connection-types'>
+                        {/* Form for Elèves */}
+                        <form className="signin-form" onSubmit={(e) => handleSubmit(e, 'student')}>
+                            <span className='title inline'><h2>Elèves</h2></span>
+                            <div className="form-group">
+                                <label htmlFor="studentEmail">Adresse e-mail :</label>
+                                <input 
+                                    type="email" 
+                                    id="studentEmail" 
+                                    name="studentEmail" 
+                                    value={studentEmail}
+                                    onChange={(e) => setStudentEmail(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="studentPassword">Mot de passe :</label>
+                                <input 
+                                    type="password" 
+                                    id="studentPassword" 
+                                    name="studentPassword"
+                                    value={studentPassword}
+                                    onChange={(e) => setStudentPassword(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="studentBirthdate">Date de naissance :</label>
+                                <input 
+                                    type="date" 
+                                    id="studentBirthdate" 
+                                    name="studentBirthdate" 
+                                    value={studentBirthdate}
+                                    onChange={(e) => setStudentBirthdate(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="studentAddress">Adresse :</label>
+                                <input 
+                                    type="text" 
+                                    id="studentAddress" 
+                                    name="studentAddress" 
+                                    value={studentAddress}
+                                    onChange={(e) => setStudentAddress(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="studentEducationLevel">Niveau d'étude :</label>
+                                <select 
+                                    id="studentEducationLevel" 
+                                    name="studentEducationLevel" 
+                                    value={studentEducationLevel}
+                                    onChange={(e) => setStudentEducationLevel(e.target.value)}
+                                    required 
+                                >
+                                    <option value="">Sélectionnez votre classe</option>
+                                    <option value="sixième">6ème</option>
+                                    <option value="cinquième">5ème</option>
+                                    <option value="quatrième">4ème</option>
+                                    <option value="troisième">3ème</option>
+                                    <option value="seconde">2nd</option>
+                                    <option value="première">1ère</option>
+                                    <option value="Terminal">Terminal</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="studentProfileImage">Image de profil :</label>
+                                <input 
+                                    type="file" 
+                                    id="studentProfileImage" 
+                                    name="studentProfileImage"
+                                    accept="image/*"
+                                    onChange={(e) => handleImageChange(e, setStudentProfileImage)}
+                                />
+                            </div>
+                            <button type="submit" className="signin-button">S'inscrire</button>
+                        </form>
 
-                        <div className="form-group">
-                            <label htmlFor="birthdate">Date de naissance :</label>
-                            <span className='birthdate'><input 
-                                type="date" 
-                                id="birthdate" 
-                                name="birthdate" 
-                                value={birthdate}
-                                onChange={(e) => setBirthdate(e.target.value)}
-                                required 
-                            /></span>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="address">Adresse :</label>
-                            <input 
-                                type="text" 
-                                id="address" 
-                                name="address" 
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                required 
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="education-level">Niveau d'étude :</label>
-                            <select 
-                                id="education-level" 
-                                name="education-level" 
-                                value={educationLevel}
-                                onChange={(e) => setEducationLevel(e.target.value)}
-                                required 
-                            >
-                                <option value="">Sélectionnez votre classe</option>
-                                <option value="sixième">6ème</option>
-                                <option value="cinquième">5ème</option>
-                                <option value="quatrième">4ème</option>
-                                <option value="troisième">3ème</option>
-                                <option value="seconde">2nd</option>
-                                <option value="première">1ère</option>
-                                <option value="Terminal">Terminal</option>
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="profileImage">Image de profil :</label>
-                            <input 
-                                type="file" 
-                                id="profileImage" 
-                                name="profileImage"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                            />
-                        </div>
-
-                        <button type="submit" className="signin-button">S'inscrire</button>
-                    </form>
-                    {message && <p>{message}</p>}
+                        {/* Form for Professeurs */}
+                        <form className="signin-form" onSubmit={(e) => handleSubmit(e, 'teacher')}>
+                            <span className='title inline'><h2>Professeurs</h2></span>
+                            <div className="form-group">
+                                <label htmlFor="teacherEmail">Adresse e-mail :</label>
+                                <input 
+                                    type="email" 
+                                    id="teacherEmail" 
+                                    name="teacherEmail" 
+                                    value={teacherEmail}
+                                    onChange={(e) => setTeacherEmail(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="teacherPassword">Mot de passe :</label>
+                                <input 
+                                    type="password" 
+                                    id="teacherPassword" 
+                                    name="teacherPassword"
+                                    value={teacherPassword}
+                                    onChange={(e) => setTeacherPassword(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="teacherBirthdate">Date de naissance :</label>
+                                <input 
+                                    type="date" 
+                                    id="teacherBirthdate" 
+                                    name="teacherBirthdate" 
+                                    value={teacherBirthdate}
+                                    onChange={(e) => setTeacherBirthdate(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="teacherAddress">Adresse :</label>
+                                <input 
+                                    type="text" 
+                                    id="teacherAddress" 
+                                    name="teacherAddress" 
+                                    value={teacherAddress}
+                                    onChange={(e) => setTeacherAddress(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="teacherEducationLevel">Niveau d'étude :</label>
+                                <select 
+                                    id="teacherEducationLevel" 
+                                    name="teacherEducationLevel" 
+                                    value={teacherEducationLevel}
+                                    onChange={(e) => setTeacherEducationLevel(e.target.value)}
+                                    required 
+                                >
+                                    <option value="">Sélectionnez votre classe</option>
+                                    <option value="sixième">6ème</option>
+                                    <option value="cinquième">5ème</option>
+                                    <option value="quatrième">4ème</option>
+                                    <option value="troisième">3ème</option>
+                                    <option value="seconde">2nd</option>
+                                    <option value="première">1ère</option>
+                                    <option value="Terminal">Terminal</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="teacherProfileImage">Image de profil :</label>
+                                <input 
+                                    type="file" 
+                                    id="teacherProfileImage" 
+                                    name="teacherProfileImage"
+                                    accept="image/*"
+                                    onChange={(e) => handleImageChange(e, setTeacherProfileImage)}
+                                />
+                            </div>
+                            <button type="submit" className="signin-button">S'inscrire</button>
+                        </form>
+                        {message && <p>{message}</p>}
+                    </div>
                 </div>
-                
             </main>
             <footer>
                 <h3>Nos réseaux :</h3>
