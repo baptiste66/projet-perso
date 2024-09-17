@@ -119,4 +119,36 @@ margin-right: 500px;
    align-items: center;
    gap: 30%;
 }
-
+.none{
+    display: none;
+}
+.pdp{
+    width: 300px;
+    height: 200px;
+}
+.info {
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin: 20px 0;
+  }
+  
+  .left {margin: 0;
+    flex: 1;
+    padding-right: 20px; 
+    margin-left: 50px;
+  }
+  
+  .right  {
+    flex: 2; 
+  }
+  .right p{
+    margin: 0;
+    margin-top: 39px;
+    
+  }
+  .left h4{display: flex;
+    margin-left: 85px;
+    margin-top: -2px;
+  }
+  

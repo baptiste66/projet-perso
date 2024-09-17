@@ -4,16 +4,9 @@ const { getUserProfile } = require('../services/userService');
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const  connection  = require('../connection/db');
 const router = express.Router();
 
-// Connexion à la base de données
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'learnhome',
-});
 
 // Sign-up
 router.post('/signup', async (req, res) => {

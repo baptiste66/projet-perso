@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.svg';
 import { useAuth } from '../context/context'; 
 
+
+
 export default function Header() {
   const { token, logout } = useAuth();
   const isLoggedIn = !!token; 
@@ -11,7 +13,7 @@ export default function Header() {
     logout();
     window.location.href = '/login';
   };
-
+  
   return (
     <header>
       <nav className="main-nav">
@@ -22,7 +24,8 @@ export default function Header() {
           <Link className="main-nav-item" to="/">
             <img src={logo} alt="logo"/>
           </Link>
-          
+                    {isLoggedIn ? (<Link className='main-nav-item' to="/profil">
+                    <p>profil</p></Link>) : (<span className='none'><p></p></span>)}
           {isLoggedIn ? (
             <Link className="main-nav-item" to="/" onClick={handleLogout}>
               <p>Déconnexion</p>
@@ -31,7 +34,9 @@ export default function Header() {
             <Link className="main-nav-item" to="/login">
               <p>Connexion</p>
             </Link>
-          )}
+          )
+          }
+
         </div>
       </nav>
     </header>

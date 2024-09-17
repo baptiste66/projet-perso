@@ -1,6 +1,7 @@
 import Header from '../components/header/header';
 import school from "../assets/ai-generated-8663328_1280.png";
 import { Link } from "react-router-dom";
+import Footer from "../components/footer/footer"
 import "../style/index.css"
 function Index() {
     return (
@@ -29,9 +30,7 @@ function Index() {
                     <h2>Nos cours:</h2>
                     <h2>Nos exercices:</h2>
           </main>
-         <footer>
-          <h3>Nos réseaux :</h3>
-         </footer>
+         <Footer/>
         </>
     );
   }

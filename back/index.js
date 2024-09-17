@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const fileUpload = require('express-fileupload');
 const dotenv = require('dotenv');
 const router = require('./routes/router');
-
+const connection = require('./connection/db');
 dotenv.config();
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 console.log(process.env.STRIPE_KEY)
@@ -23,27 +23,8 @@ app.use(fileUpload({
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
+  allowedHeaders: ['Content-Type','Authorization'],
 }));
-
-// Connexion à la base de données
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'learnhome',
-});
-
-connection.connect((err) => {
-  if (err) {
-    console.error("Erreur de connexion :" + err.stack);
-    return;
-  }
-  console.log("Connexion réussie à la base de données");
-});
-
-// Exporter la connexion pour l'utiliser dans d'autres fichiers
-module.exports = { connection };
 
 // Routes
 app.use('/api', router);

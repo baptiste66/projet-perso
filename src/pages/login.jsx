@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../components/header/header';
 import { useAuth } from '../components/context/context';
 import { useNavigate } from 'react-router-dom';
+import Footer from "../components/footer/footer"
 import "../style/index.css";
 
 const Login = () => {
@@ -83,7 +84,7 @@ const Login = () => {
               </div>
               <button type="submit" className="login-button">Connexion</button>
             </form>
-            {message && <p>{message}</p>}
+            
 
             {/* Form for Professeurs */}
             <form className="login-form" onSubmit={(e) => handleLogin(e, 'teacher')}>
@@ -112,13 +113,11 @@ const Login = () => {
               </div>
               <button type="submit" className="login-button">Connexion</button>
             </form>
-            {message && <p>{message}</p>}
-          </div>
+            
+          </div>{message && <p>{message}</p>}
         </div>
       </main>
-      <footer>
-        <h3>Nos réseaux :</h3>
-      </footer>
+      <Footer/>
     </>
   );
 }

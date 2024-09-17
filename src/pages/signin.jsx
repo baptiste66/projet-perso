@@ -4,6 +4,7 @@ import "../style/index.css";
 import signup from '../services/user.service';
 import { useAuth } from '../components/context/context';
 import { useNavigate } from 'react-router-dom';
+import Footer from "../components/footer/footer"
 
 
 function Signin() {
@@ -265,9 +266,7 @@ function Signin() {
                     </div>
                 </div>
             </main>
-            <footer>
-                <h3>Nos réseaux :</h3>
-            </footer>
+            <Footer/>
         </>
     );
 }

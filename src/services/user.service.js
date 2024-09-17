@@ -1,3 +1,4 @@
+import axios from 'axios';
 const signup = async (email, password, birthdate, address, educationLevel, profileImage) => {
     
     const formData = new FormData();
@@ -13,7 +14,20 @@ const signup = async (email, password, birthdate, address, educationLevel, profi
       body: formData,
     });
   
-    const data = await response.json();console.log('Réponse complète de l\'API:', data);
+    const data = await response.json();
     return data;
   };
   export default signup
+
+  export const getUserProfile = async (token) => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (err) {
+      throw err; 
+    }
+  };

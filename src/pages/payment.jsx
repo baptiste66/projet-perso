@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from '../components/header/header';
+import Footer from "../components/footer/footer"
 import "../style/index.css";
 
 function Offer() {
@@ -45,10 +46,8 @@ function Offer() {
             </div>
           </div>
         </main>
-        <footer>
-          <h3>Nos réseaux :</h3>
-        </footer>
-        </>
+        <Footer/>
+          </>
   );
 }
 

@@ -1,15 +1,15 @@
-const { connection } = require('../index');
+
+const  connection  = require('../connection/db');
 
 const getUserProfile = (req, res) => {
-  console.log('Route profil atteinte');
 
   const userId = req.user.id;
-  const userType = req.user.userType;  // Assure-toi que userType est inclus dans le payload du token
+  const userType = req.user.userType;  
 
-  // Détermine la table à utiliser
+  
   const tableName = userType === 'teacher' ? 'users_prof' : 'users';
 
-  // Effectue la requête dans la table appropriée
+  
   connection.query('SELECT * FROM ?? WHERE id = ?', [tableName, userId], (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
