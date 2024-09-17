@@ -8,7 +8,7 @@ const signup = async (email, password, birthdate, address, educationLevel, profi
     formData.append('educationLevel', educationLevel);
     formData.append('profileImage', profileImage);
   
-    const response = await fetch('http://localhost:3001/signup', {
+    const response = await fetch('http://localhost:3001/api/signup', {
       method: 'POST',
       body: formData,
     });
