@@ -13,26 +13,26 @@ const Profile = () => {
   const [validationError, setValidationError] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
 
-  useEffect(() => {
+  const fetchProfile = async () => {
     const token = localStorage.getItem('token');
-    const fetchProfile = async () => {
-      try {
-        const data = await getUserProfile(token);
-        setUser(data);
-        setFormData({
-          email: data.email,
-          birthdate: data.birthdate ? new Date(data.birthdate).toISOString().split('T')[0] : '', // Convert to yyyy-mm-dd
-          address: data.address,
-          educationLevel: data.educationLevel,
-          profileImage: data.profileImage,
-        });
-      } catch (err) {
-        setError(err.response ? err.response.data.message : err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      const data = await getUserProfile(token);
+      setUser(data);
+      setFormData({
+        email: data.email || '',
+        birthdate: data.birthdate ? new Date(data.birthdate).toISOString().split('T')[0] : '',
+        address: data.address || '',
+        educationLevel: data.educationLevel || '',
+        profileImage: data.profileImage || '',
+      });
+    } catch (err) {
+      setError(err.response ? err.response.data.message : err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProfile();
   }, []);
 
@@ -78,19 +78,26 @@ const Profile = () => {
   };
 
   const handleSaveChanges = async () => {
+    const error = validateForm();
+    if (error) {
+      setValidationError(error);
+      return;
+    }
+  
     const token = localStorage.getItem('token');
     const updatedData = {
       email: formData.email,
-      birthdate: formData.birthdate, // Format should be yyyy-mm-dd
+      birthdate: formData.birthdate, 
       address: formData.address,
       educationLevel: formData.educationLevel,
       profileImage: formData.profileImage,
     };
-
+  
     try {
       const updatedUser = await updateUserProfile(token, updatedData);
       setUser(updatedUser);
-      setEditMode(false); // Exit edit mode on successful update
+      setEditMode(false); // Exit if successful update
+      await fetchProfile(); // Refresh profile data
     } catch (error) {
       setError(error.response ? error.response.data.message : error.message);
     }
@@ -99,7 +106,7 @@ const Profile = () => {
   if (loading) return <p>Chargement...</p>;
   if (error) return <p>Erreur: {error}</p>;
 
-  // Format the birthdate for display
+ 
   const formatDate = (date) => {
     if (!date) return '';
     const d = new Date(date);
@@ -138,7 +145,7 @@ const Profile = () => {
                   </div>
                   <div>
                     <label>Date de naissance: </label>
-                    <input type="date" name="birthdate" value={formData.birthdate} onChange={handleInputChange} />
+                    <input type="date" name="birthdate" value={formData.birthdate || ''} onChange={handleInputChange} />
                   </div>
                   <div>
                     <label>Adresse: </label>

@@ -2,6 +2,7 @@ import Header from '../components/header/header';
 import school from "../assets/ai-generated-8663328_1280.png";
 import { Link } from "react-router-dom";
 import Footer from "../components/footer/footer"
+import Card from "../components/card/card"
 import "../style/index.css"
 function Index() {
     return (
@@ -27,6 +28,7 @@ function Index() {
                     qualifiés pour offrir un soutien personnalisé et adapté aux besoins de chacun.</p>
                     </section>
                     <h2>Nos Professeurs:</h2>
+                    <Card/>
                     <h2>Nos cours:</h2>
                     <h2>Nos exercices:</h2>
           </main>

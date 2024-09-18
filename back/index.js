@@ -12,7 +12,7 @@ console.log(process.env.STRIPE_KEY)
 const app = express();
 const PORT = 3001;
 
-// Configuration des middlewares
+// image size
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(fileUpload({
@@ -53,7 +53,7 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 
-// Lancement du serveur
+//serveur
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });

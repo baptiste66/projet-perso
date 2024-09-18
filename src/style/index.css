@@ -17,14 +17,14 @@ footer {
     background-color:#C74754 ;
 }
 .background-header img{
-    width: 100%;
-   
+    width: 100px;
+   height: 100px;
 }
 a{ display: flex;
     color:  white;
     align-items: center;
-  margin-left: 100px;
-  margin-right: 100px;
+  margin-left: 10%;
+  margin-right: 10%;
   cursor: pointer;
 }
 .main-nav-item{
@@ -37,7 +37,6 @@ a:hover{
 main {
     background-color: #F9A6AE;
     padding-bottom: 50px;
-    
 }
 .background-content img{
     width: 100%;
@@ -151,4 +150,42 @@ margin-right: 500px;
     margin-left: 85px;
     margin-top: -2px;
   }
+  /*card */
+
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+  }
   
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    padding: 16px;
+    background-color: #fff;
+  }
+  
+  .card-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .card-body {
+    text-align: center;
+  }
+  
+  .card-body h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  
+  .card-body p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: black;
+  }

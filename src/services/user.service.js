@@ -44,3 +44,10 @@ const signup = async (email, password, birthdate, address, educationLevel, profi
       throw error;
     }
   };
+  export const getAllUsers = async () => {
+    const response = await axios.get(`http://localhost:3001/api/users_prof`); 
+    return response.data;
+  };
+  export const getUserById = (id) => {
+    return axios.get(`http://localhost:3001/api/users_prof`).then(res => res.data);
+  };

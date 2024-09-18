@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const  connection  = require('../connection/db');
 const router = express.Router();
-const { updateUser}= require ('../controllers/controllers');
+const { updateUser, getAllUsers}= require ('../controllers/controllers');
 
 
 // Sign-up
@@ -114,7 +114,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
   try {
     const { email, birthdate, address, educationLevel, profileImage } = req.body;
 
-    // Validation des champs requis
+    // regex
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ message: 'Adresse email invalide' });
     }
@@ -130,8 +130,8 @@ router.put('/profile', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: "Niveau d'étude manquant" });
     }
 
-    // Appeler une fonction qui met à jour l'utilisateur en base de données
-    const userType = req.user.userType; // Assure-toi que `userType` est bien stocké dans le token
+    
+    const userType = req.user.userType; 
     const updatedUser = await updateUser(req.user.id, userType, { email, birthdate, address, educationLevel, profileImage });
 
     return res.status(200).json({ message: 'Profil mis à jour avec succès', updatedUser });
@@ -141,6 +141,8 @@ router.put('/profile', authenticateToken, async (req, res) => {
   }
 });
 
+// all teacher
+router.get('/users_prof', getAllUsers);
 
 
 

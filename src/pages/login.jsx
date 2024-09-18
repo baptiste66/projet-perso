@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import Header from '../components/header/header';
+
 import { useAuth } from '../components/context/context';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/header/header';
 import Footer from "../components/footer/footer"
 import "../style/index.css";
 
 const Login = () => {
-  // States for Elèves
+  // States for student
   const [studentEmail, setStudentEmail] = useState('');
   const [studentPassword, setStudentPassword] = useState('');
 
-  // States for Professeurs
+  // States for teacher
   const [teacherEmail, setTeacherEmail] = useState('');
   const [teacherPassword, setTeacherPassword] = useState('');
 

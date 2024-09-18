@@ -23,4 +23,20 @@ const updateUser = (userId, userType, updateData) => {
   });
 };
 
-module.exports = { updateUser };
+
+const getAllUsers = (req, res) => {
+  console.log("Fetching all users...");
+  const query = 'SELECT * FROM users_prof';
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Error fetching users:", error);
+      return res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs' });
+    }
+    res.json(results);
+  });
+};
+module.exports = {
+  getAllUsers,updateUser
+};
+

@@ -9,6 +9,7 @@ import Payment from './pages/payment';
 import { AuthProvider } from './components/context/context';
 import PrivateRoute from './components/privateRoutes/privateRoutes';
 import Profil from './pages/profils'
+import UserDetail from './pages/userDetails';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -21,8 +22,8 @@ root.render(
           <Route path="/Index" element={<Index />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Signin" element={<Signin />} />
-          
-          {/* Routes protégées */}
+          <Route path="/user/:id" element={<UserDetail/>} />
+          {/*protect */}
           <Route path="/Profil" element={<PrivateRoute element={<Profil />} />} />
           <Route path="/Payment" element={<PrivateRoute element={<Payment />} />} />
         </Routes>
