@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const  connection  = require('../connection/db');
 const router = express.Router();
+const { updateUser}= require ('../controllers/controllers');
 
 
 // Sign-up
@@ -36,10 +37,10 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Image de profil manquante' });
     }
 
-    // Déterminer la table à utiliser en fonction de userType
+   
     const tableName = userType === 'student' ? 'users' : 'users_prof';
 
-    // Vérifier si l'utilisateur existe déjà dans la table appropriée
+    
     connection.query(`SELECT * FROM ${tableName} WHERE email = ?`, [email], async (err, results) => {
       if (err) {
         return res.status(500).json({ error: err.message });
@@ -48,12 +49,12 @@ router.post('/signup', async (req, res) => {
         return res.status(409).json({ message: 'Utilisateur déjà existant' });
       }
 
-      // Hashage du mot de passe
+      // Hashage 
       const hashedPassword = await bcrypt.hash(password, 8);
-      // Convertir l'image en base64
+      //  base64
       const profileImageBase64 = profileImage.data.toString('base64');
 
-      // Insertion dans la base de données
+      // to db
       connection.query(
         `INSERT INTO ${tableName} (email, password, birthdate, address, educationLevel, profileImage) VALUES (?, ?, ?, ?, ?, ?)`,
         [email, hashedPassword, birthdate, address, educationLevel, profileImageBase64],
@@ -62,7 +63,7 @@ router.post('/signup', async (req, res) => {
             return res.status(500).json({ error: err.message });
           }
 
-          // Générer un token après l'inscription
+          // token
           const token = jwt.sign({ id: result.insertId, userType }, 'your_jwt_secret', { expiresIn: '24h' });
           res.status(201).json({ message: 'Utilisateur créé avec succès', token });
         }
@@ -99,12 +100,48 @@ router.post('/login', (req, res) => {
   });
 });
 
-// Route protégée pour obtenir le profil utilisateur
+
 router.get('/profile', authenticateToken, getUserProfile);
 
-// Route protégée pour les paiements
+
 router.get('/protected-route', authenticateToken, (req, res) => {
   res.json({ message: 'Vous avez accès à cette route protégée!' });
 });
+
+// PUT /api/profile
+
+router.put('/profile', authenticateToken, async (req, res) => {
+  try {
+    const { email, birthdate, address, educationLevel, profileImage } = req.body;
+
+    // Validation des champs requis
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: 'Adresse email invalide' });
+    }
+    if (!birthdate) {
+      return res.status(400).json({ message: 'Date de naissance manquante' });
+    }
+    const birthdateObj = new Date(birthdate);
+    const cutoffDate = new Date('2015-01-01');
+    if (isNaN(birthdateObj.getTime()) || birthdateObj >= cutoffDate) {
+      return res.status(400).json({ message: 'La date de naissance doit être antérieure à 2015' });
+    }
+    if (!educationLevel) {
+      return res.status(400).json({ message: "Niveau d'étude manquant" });
+    }
+
+    // Appeler une fonction qui met à jour l'utilisateur en base de données
+    const userType = req.user.userType; // Assure-toi que `userType` est bien stocké dans le token
+    const updatedUser = await updateUser(req.user.id, userType, { email, birthdate, address, educationLevel, profileImage });
+
+    return res.status(200).json({ message: 'Profil mis à jour avec succès', updatedUser });
+  } catch (error) {
+    console.error('Erreur de mise à jour du profil:', error);
+    return res.status(500).json({ message: 'Erreur interne du serveur' });
+  }
+});
+
+
+
 
 module.exports = router;

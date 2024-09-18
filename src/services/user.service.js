@@ -31,3 +31,16 @@ const signup = async (email, password, birthdate, address, educationLevel, profi
       throw err; 
     }
   };
+  export const updateUserProfile = async (token, updatedData) => {
+    try {
+      const response = await axios.put('http://localhost:3001/api/profile', updatedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil:', error);
+      throw error;
+    }
+  };
