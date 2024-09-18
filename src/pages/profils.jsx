@@ -37,10 +37,12 @@ const Profile = () => {
   }, []);
 
   const handleInputChange = (e) => {
+    //old value 
     const { name, value } = e.target;
+    //new value
     setFormData({ ...formData, [name]: value });
   };
-
+// base64
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {

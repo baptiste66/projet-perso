@@ -15,7 +15,7 @@ router.post('/signup', async (req, res) => {
     const { email, password, address, birthdate, educationLevel, userType } = req.body;
     const profileImage = req.files ? req.files.profileImage : null;
 
-    // Validations
+    // regex
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ message: 'Adresse email invalide' });
     }
@@ -79,20 +79,20 @@ router.post('/login', (req, res) => {
   const { email, password, userType } = req.body;
 
   const table = userType === 'teacher' ? 'users_prof' : 'users';
-
+//email
   connection.query(`SELECT * FROM ${table} WHERE email = ?`, [email], async (err, results) => {
     if (err) {
       return res.status(500).json({ message: 'Erreur serveur' });
     }
     if (results.length === 0) {
-      return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+      return res.status(400).json({ message: 'Email incorrect' });
     }
 
     const user = results[0];
-
+//password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+      return res.status(400).json({ message: 'Mot de passe incorrect' });
     }
 
     const token = jwt.sign({ id: user.id, userType }, 'your_jwt_secret', { expiresIn: '24h' });
@@ -108,7 +108,7 @@ router.get('/protected-route', authenticateToken, (req, res) => {
   res.json({ message: 'Vous avez accès à cette route protégée!' });
 });
 
-// PUT /api/profile
+//modificate profile
 
 router.put('/profile', authenticateToken, async (req, res) => {
   try {

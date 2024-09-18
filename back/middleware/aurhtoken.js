@@ -13,7 +13,7 @@ function authenticateToken(req, res, next) {
       return res.status(403).json({ message: 'Token invalide' });
     }
 
-    req.user = user;  // Le contenu du jeton (id, userType, etc.)
+    req.user = user;  // token info
     next();
   });
 }

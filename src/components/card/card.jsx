@@ -20,7 +20,7 @@ const Cards = () => {
     };
   
     fetchUsers();
-  }, []);
+  });
 
   const formatDate = (date) => {
     if (!date) return 'Date non disponible';

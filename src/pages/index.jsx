@@ -27,10 +27,14 @@ function Index() {
                     Notre plateforme innovante met en relation des élèves motivés et des professeurs 
                     qualifiés pour offrir un soutien personnalisé et adapté aux besoins de chacun.</p>
                     </section>
+                    <section className='teacher-cards'>
                     <h2>Nos Professeurs:</h2>
                     <Card/>
-                    <h2>Nos cours:</h2>
-                    <h2>Nos exercices:</h2>
+                    </section>
+                    <section className='teacher-cards'>
+                    <h2>Nos cours:</h2></section>
+                    <section className='teacher-cards'>
+                    <h2>Nos exercices:</h2></section>
           </main>
          <Footer/>
         </>

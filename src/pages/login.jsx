@@ -30,6 +30,7 @@ const Login = () => {
       password = teacherPassword;
   }
     try {
+      //connect
       const response = await fetch('http://localhost:3001/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

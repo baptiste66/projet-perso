@@ -37,7 +37,7 @@ app.post('/create-checkout-session', async (req, res) => {
       payment_method_types: ['card'],
       line_items: [
         {
-          price: 'price_1PxWjmGnk9tIbJLBtBzJYgCL', // Remplacez par votre prix Stripe
+          price: 'price_1PxWjmGnk9tIbJLBtBzJYgCL', 
           quantity: 1,
         },
       ],

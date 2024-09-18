@@ -155,8 +155,11 @@ margin-right: 500px;
   .cards-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
     padding: 20px;
+    gap:50px;
+  }
+  .cards-container a{
+    margin: 0;
   }
   
   .card {
@@ -188,4 +191,7 @@ margin-right: 500px;
     margin: 4px 0;
     font-size: 14px;
     color: black;
+  }
+  .teacher-cards{
+    margin-left: 50px;
   }

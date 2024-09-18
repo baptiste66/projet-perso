@@ -8,7 +8,6 @@ import Footer from "../components/footer/footer"
 
 
 function Signin() {
-    // State for Elèves form
     const [studentEmail, setStudentEmail] = useState('');
     const [studentPassword, setStudentPassword] = useState('');
     const [studentBirthdate, setStudentBirthdate] = useState('');
@@ -16,7 +15,6 @@ function Signin() {
     const [studentEducationLevel, setStudentEducationLevel] = useState('');
     const [studentProfileImage, setStudentProfileImage] = useState(null);
     
-    // State for Professeurs form
     const [teacherEmail, setTeacherEmail] = useState('');
     const [teacherPassword, setTeacherPassword] = useState('');
     const [teacherBirthdate, setTeacherBirthdate] = useState('');
@@ -33,10 +31,9 @@ function Signin() {
             setMessage('La taille de l\'image dépasse la limite autorisée de 50 Mo.');
             return;
         }
-        setProfileImage(file); // Set the file object directly
+        setProfileImage(file); 
     };
 
-    // Function to handle profile image change for both forms
     const handleSubmit = async (e, userType) => {
         e.preventDefault();
         let email, password, birthdate, address, educationLevel, profileImage;
@@ -58,7 +55,7 @@ function Signin() {
           profileImage = teacherProfileImage;
         }
       
-        // Basic validation
+        // regex basic 
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           setMessage('Adresse email invalide');
           return;
@@ -82,9 +79,6 @@ function Signin() {
       
         try {
           const data = await signup(email, password, birthdate, address, educationLevel, profileImage);
-          console.log('Réponse complète de l\'API:', data);
-          console.log('Jeton reçu:', data.token);
-      
           if (data.token) {
             await login(data.token);
             console.log('Jeton stocké:', localStorage.getItem('token'));

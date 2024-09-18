@@ -11,6 +11,7 @@ const UserDetail = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    //user/id
     const fetchUser = async () => {
       try {
         const data = await getUserById(id);

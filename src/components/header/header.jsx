@@ -18,14 +18,17 @@ export default function Header() {
     <header>
       <nav className="main-nav">
         <div className="background-header">
-          <Link className="main-nav-item" to="/signin">
-            <p>S'inscrire</p>
-          </Link>
-          <Link className="main-nav-item" to="/">
-            <img src={logo} alt="logo"/>
-          </Link>
+          
+          
+
                     {isLoggedIn ? (<Link className='main-nav-item' to="/profil">
-                    <p>profil</p></Link>) : (<span className='none'><p></p></span>)}
+                    <p>Profil</p></Link>) : (
+                      <Link className="main-nav-item" to="/signin"><p>S'inscrire</p></Link>
+                      )}
+
+                      <Link className="main-nav-item" to="/">
+            <img src={logo} alt="logo"/>
+          </Link>        
           {isLoggedIn ? (
             <Link className="main-nav-item" to="/" onClick={handleLogout}>
               <p>Déconnexion</p>
