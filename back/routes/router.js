@@ -9,13 +9,12 @@ const router = express.Router();
 const { updateUser, getAllUsers}= require ('../controllers/controllers');
 
 
-// Sign-up
 router.post('/signup', async (req, res) => {
   try {
     const { email, password, address, birthdate, educationLevel, userType } = req.body;
     const profileImage = req.files ? req.files.profileImage : null;
-
-    // regex
+    console.log('Type d\'utilisateur reçu:', userType);
+    // Validation des champs
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ message: 'Adresse email invalide' });
     }
@@ -37,33 +36,29 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Image de profil manquante' });
     }
 
-   
-    const tableName = userType === 'student' ? 'users' : 'users_prof';
-
-    
-    connection.query(`SELECT * FROM ${tableName} WHERE email = ?`, [email], async (err, results) => {
+    // Vérification de l'existence de l'utilisateur avec le même email et userType
+    connection.query(`SELECT * FROM users WHERE email = ? AND userType = ?`, [email, userType], async (err, results) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
       if (results.length > 0) {
-        return res.status(409).json({ message: 'Utilisateur déjà existant' });
+        return res.status(409).json({ message: 'Utilisateur déjà existant avec ce type' });
       }
 
-      // Hashage 
+      // Hashage du mot de passe
       const hashedPassword = await bcrypt.hash(password, 8);
-      //  base64
       const profileImageBase64 = profileImage.data.toString('base64');
 
-      // to db
+      // Insertion dans la table `users` avec `userType`
       connection.query(
-        `INSERT INTO ${tableName} (email, password, birthdate, address, educationLevel, profileImage) VALUES (?, ?, ?, ?, ?, ?)`,
-        [email, hashedPassword, birthdate, address, educationLevel, profileImageBase64],
+        `INSERT INTO users (email, password, birthdate, address, educationLevel, profileImage, userType) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [email, hashedPassword, birthdate, address, educationLevel, profileImageBase64, userType],
         (err, result) => {
           if (err) {
             return res.status(500).json({ error: err.message });
           }
 
-          // token
+          // Génération du token
           const token = jwt.sign({ id: result.insertId, userType }, 'your_jwt_secret', { expiresIn: '24h' });
           res.status(201).json({ message: 'Utilisateur créé avec succès', token });
         }
@@ -74,32 +69,33 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+
 // Login
 router.post('/login', (req, res) => {
   const { email, password, userType } = req.body;
 
-  const table = userType === 'teacher' ? 'users_prof' : 'users';
-//email
-  connection.query(`SELECT * FROM ${table} WHERE email = ?`, [email], async (err, results) => {
+  // Recherche de l'utilisateur dans la table `users`
+  connection.query(`SELECT * FROM users WHERE email = ? AND userType = ?`, [email, userType], async (err, results) => {
     if (err) {
       return res.status(500).json({ message: 'Erreur serveur' });
     }
     if (results.length === 0) {
-      return res.status(400).json({ message: 'Email incorrect' });
+      return res.status(400).json({ message: 'Email ou type d\'utilisateur incorrect' });
     }
 
     const user = results[0];
-//password
+
+    // Vérification du mot de passe
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Mot de passe incorrect' });
     }
 
+    // Génération du token JWT
     const token = jwt.sign({ id: user.id, userType }, 'your_jwt_secret', { expiresIn: '24h' });
     res.status(200).json({ message: 'Connexion réussie', token });
   });
 });
-
 
 router.get('/profile', authenticateToken, getUserProfile);
 
@@ -114,7 +110,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
   try {
     const { email, birthdate, address, educationLevel, profileImage } = req.body;
 
-    // regex
+    // Validation des champs
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ message: 'Adresse email invalide' });
     }
@@ -130,8 +126,10 @@ router.put('/profile', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: "Niveau d'étude manquant" });
     }
 
-    
+    // Récupérer le type d'utilisateur à partir du token
     const userType = req.user.userType; 
+
+    // Mise à jour de l'utilisateur
     const updatedUser = await updateUser(req.user.id, userType, { email, birthdate, address, educationLevel, profileImage });
 
     return res.status(200).json({ message: 'Profil mis à jour avec succès', updatedUser });

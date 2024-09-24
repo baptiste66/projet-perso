@@ -78,7 +78,7 @@ function Signin() {
         }
       
         try {
-          const data = await signup(email, password, birthdate, address, educationLevel, profileImage);
+          const data = await signup(email, password, birthdate, address, educationLevel, profileImage, userType);
           if (data.token) {
             await login(data.token);
             console.log('Jeton stocké:', localStorage.getItem('token'));

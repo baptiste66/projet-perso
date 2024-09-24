@@ -1,6 +1,6 @@
 import axios from 'axios';
-const signup = async (email, password, birthdate, address, educationLevel, profileImage) => {
-    
+const signup = async (email, password, birthdate, address, educationLevel, profileImage, userType) => {
+  console.log('Type d\'utilisateur:', userType);
     const formData = new FormData();
     formData.append('email', email);
     formData.append('password', password);
@@ -8,6 +8,7 @@ const signup = async (email, password, birthdate, address, educationLevel, profi
     formData.append('address', address);
     formData.append('educationLevel', educationLevel);
     formData.append('profileImage', profileImage);
+    formData.append('userType', userType);
   
     const response = await fetch('http://localhost:3001/api/signup', {
       method: 'POST',

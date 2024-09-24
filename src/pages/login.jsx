@@ -14,12 +14,12 @@ const Login = () => {
   // States for teacher
   const [teacherEmail, setTeacherEmail] = useState('');
   const [teacherPassword, setTeacherPassword] = useState('');
-
+ 
   const [message, setMessage] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = async (e, userType) => {
+  const handleLogin = async (e,userType) => {
     e.preventDefault();
     let email, password;
     if (userType === 'student') {

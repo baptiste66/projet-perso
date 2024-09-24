@@ -4,12 +4,11 @@ const util = require('util');
 connection.query = util.promisify(connection.query);
 
 
-const updateUser = async (userId, userType, updateData) => {
+const updateUser = async (userId, updateData) => {
   const { email, birthdate, address, educationLevel, profileImage } = updateData;
-  const tableName = userType === 'student' ? 'users' : 'users_prof';
-
+  
   const query = `
-    UPDATE ${tableName}
+    UPDATE users
     SET email = ?, birthdate = ?, address = ?, educationLevel = ?, profileImage = ?
     WHERE id = ?
   `;
@@ -25,10 +24,18 @@ const updateUser = async (userId, userType, updateData) => {
 };
 
 const getAllUsers = async (req, res) => {
-  const query = 'SELECT * FROM users_prof';
+  const { userType } = req.query; 
+
+  let query = 'SELECT * FROM users';
+  let values = [];
+
+  if (userType) {
+    query += ' WHERE userType = ?';
+    values.push(userType);
+  }
 
   try {
-    const results = await connection.query(query);
+    const results = await connection.query(query, values);
     res.json(results);
   } catch (error) {
     console.error('Erreur lors de la récupération des utilisateurs:', error);
