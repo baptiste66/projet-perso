@@ -116,7 +116,7 @@ const Login = () => {
               <button type="submit" className="login-button">Connexion</button>
             </form>
             
-          </div>{message && <p>{message}</p>}
+          </div> {message && <p>{message}</p>}
         </div>
       </main>
       <Footer/>
