@@ -13,7 +13,7 @@ const LessonsDetail = () => {
     const fetchLessons = async () => {
       try {
         const data = await getLessonsById(id);
-        setLesson(data); // Directly set the lesson
+        setLesson(data); 
       } catch (err) {
         console.error('Error fetching lesson:', err);
         setError(err.response ? err.response.data.message : err.message);
@@ -37,6 +37,7 @@ const LessonsDetail = () => {
           <div>
             <p>{lesson.content}</p>
           </div>
+          <p> createur:{lesson.email_creator}</p>
         </>
       ) : (
         <p>No lesson found.</p>

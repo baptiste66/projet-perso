@@ -139,17 +139,18 @@ router.put('/profile', authenticateToken, async (req, res) => {
   }
 });
 
+// Exemple de route pour créer une leçon dans Express.js
 router.post('/lessons', (req, res) => {
-  const { title, category, content } = req.body;
+  const { title, category, content, id_creator, email_creator } = req.body;
 
   // Validate the incoming data
-  if (!title || !category || !content) {
+  if (!title || !category || !content || !id_creator || !email_creator) {
     return res.status(400).json({ success: false, message: 'Tous les champs sont obligatoires.' });
   }
 
   // SQL query to insert a new lesson
-  const query = 'INSERT INTO lessons (title, category, content) VALUES (?, ?, ?)';
-  connection.query(query, [title, category, content], (err, results) => {
+  const query = 'INSERT INTO lessons (title, category, content, id_creator, email_creator) VALUES (?, ?, ?, ?, ?)';
+  connection.query(query, [title, category, content, id_creator, email_creator], (err, results) => {
     if (err) {
       console.error('Erreur lors de l\'insertion dans la base de données:', err);
       return res.status(500).json({ success: false, message: 'Une erreur est survenue lors de la création de la leçon.' });
@@ -159,7 +160,6 @@ router.post('/lessons', (req, res) => {
     res.status(201).json({ success: true, message: 'Leçon créée avec succès !', lessonId: results.insertId });
   });
 });
-
 
 
 router.get('/lessonsById/:id', (req, res) => {

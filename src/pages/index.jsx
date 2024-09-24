@@ -36,8 +36,8 @@ function Index() {
                     <Card/>
                     </section>
                     <section className='teacher-cards'>
-                    <h2>Nos cours:</h2></section>
-                    <CardCreateLessons/><CardLessons/>
+                    <h2>Nos cours:</h2>
+                    <CardCreateLessons/><CardLessons/></section>
                     <section className='teacher-cards'>
                     <h2>Nos exercices:</h2></section>
           </main>
