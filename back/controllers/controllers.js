@@ -43,8 +43,22 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getAllLessons = async (req, res) => {
+
+  let query = 'SELECT * FROM lessons';
+
+  try {
+    const results = await connection.query(query);
+    res.json(results);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des utilisateurs:', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs' });
+  }
+};
+
 // Export des fonctions
 module.exports = {
   getAllUsers,
-  updateUser
+  updateUser,
+  getAllLessons
 };
