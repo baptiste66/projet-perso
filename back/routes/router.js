@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const  connection  = require('../connection/db');
 const router = express.Router();
-const { updateUser, getAllUsers}= require ('../controllers/controllers');
+const { updateUser, getAllUsers, getAllLessons }= require ('../controllers/controllers');
 
 
 router.post('/signup', async (req, res) => {
@@ -73,7 +73,7 @@ router.post('/signup', async (req, res) => {
 // Login
 router.post('/login', (req, res) => {
   const { email, password, userType } = req.body;
-
+  console.log('Type d\'utilisateur reçu:', userType);
   // Recherche de l'utilisateur dans la table `users`
   connection.query(`SELECT * FROM users WHERE email = ? AND userType = ?`, [email, userType], async (err, results) => {
     if (err) {
@@ -139,9 +139,45 @@ router.put('/profile', authenticateToken, async (req, res) => {
   }
 });
 
+router.post('/lessons', (req, res) => {
+  const { title, category, content } = req.body;
+
+  // Validate the incoming data
+  if (!title || !category || !content) {
+    return res.status(400).json({ success: false, message: 'Tous les champs sont obligatoires.' });
+  }
+
+  // SQL query to insert a new lesson
+  const query = 'INSERT INTO lessons (title, category, content) VALUES (?, ?, ?)';
+  connection.query(query, [title, category, content], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de l\'insertion dans la base de données:', err);
+      return res.status(500).json({ success: false, message: 'Une erreur est survenue lors de la création de la leçon.' });
+    }
+
+    // Success response
+    res.status(201).json({ success: true, message: 'Leçon créée avec succès !', lessonId: results.insertId });
+  });
+});
+
+
+
+router.get('/lessonsById/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT * FROM lessons WHERE id = ?'; // Adapter selon ta base de données
+  connection.query(query, [id], (err, results) => {
+      if (err) {
+          return res.status(500).json({ message: 'Erreur de récupération de la leçon.' });
+      }
+      if (results.length === 0) {
+          return res.status(404).json({ message: 'Leçon non trouvée.' });
+      }
+      res.status(200).json(results[0]); // Retourner la leçon
+  });
+});
+
 // all teacher
 router.get('/users_prof', getAllUsers);
 
-
-
+router.get('/lessons', getAllLessons);
 module.exports = router;

@@ -11,7 +11,9 @@ const Cards = () => {
     const fetchUsers = async () => {
       try {
         const data = await getAllUsers();
-        setUsers(data);
+        // Filtrer les utilisateurs pour ne garder que ceux de type "teacher"
+        const teachers = data.filter(user => user.userType === 'teacher');
+        setUsers(teachers);
       } catch (err) {
         setError(err.response ? err.response.data.message : err.message);
       } finally {
@@ -20,7 +22,7 @@ const Cards = () => {
     };
   
     fetchUsers();
-  });
+  }, []); // Ajouter le tableau de dépendances pour éviter les appels répétés
 
   const formatDate = (date) => {
     if (!date) return 'Date non disponible';
@@ -57,6 +59,7 @@ const Cards = () => {
         ))
       )}
     </div>
-  );}
+  );
+}
 
 export default Cards;

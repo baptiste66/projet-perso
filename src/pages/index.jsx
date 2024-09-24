@@ -3,7 +3,8 @@ import school from "../assets/ai-generated-8663328_1280.png";
 import { Link } from "react-router-dom";
 import Footer from "../components/footer/footer"
 import Card from "../components/card/card-teacher"
-import CardLessons from "../components/card/card- lessons"
+import CardCreateLessons from "../components/card/card-create-lessons"
+import CardLessons from "../components/card/card-lessons"
 import "../style/index.css"
 function Index() {
 
@@ -36,7 +37,7 @@ function Index() {
                     </section>
                     <section className='teacher-cards'>
                     <h2>Nos cours:</h2></section>
-                    <CardLessons/>
+                    <CardCreateLessons/><CardLessons/>
                     <section className='teacher-cards'>
                     <h2>Nos exercices:</h2></section>
           </main>

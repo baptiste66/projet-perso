@@ -21,7 +21,7 @@ footer {
    height: 100px;
 }
 a{ display: flex;
-    color:  white;
+  color: white;
     align-items: center;
   margin-left: 10%;
   margin-right: 10%;
@@ -185,6 +185,7 @@ margin-right: 500px;
   .card-body h2 {
     font-size: 18px;
     margin-bottom: 8px;
+    color: black;
   }
   
   .card-body p {
@@ -195,3 +196,14 @@ margin-right: 500px;
   .teacher-cards{
     margin-left: 50px;
   }
+  .lessons-detail-container {
+    white-space: pre-wrap; 
+}
+.lessons-detail-container h1{display: flex;
+  text-align: center;
+  align-content: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+
+}
