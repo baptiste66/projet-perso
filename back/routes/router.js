@@ -143,12 +143,12 @@ router.put('/profile', authenticateToken, async (req, res) => {
 router.post('/lessons', (req, res) => {
   const { title, category, content, id_creator, email_creator } = req.body;
 
-  // Validate the incoming data
+  // Validation des données entrantes
   if (!title || !category || !content || !id_creator || !email_creator) {
     return res.status(400).json({ success: false, message: 'Tous les champs sont obligatoires.' });
   }
 
-  // SQL query to insert a new lesson
+  // Requête SQL pour insérer une nouvelle leçon
   const query = 'INSERT INTO lessons (title, category, content, id_creator, email_creator) VALUES (?, ?, ?, ?, ?)';
   connection.query(query, [title, category, content, id_creator, email_creator], (err, results) => {
     if (err) {
@@ -156,10 +156,11 @@ router.post('/lessons', (req, res) => {
       return res.status(500).json({ success: false, message: 'Une erreur est survenue lors de la création de la leçon.' });
     }
 
-    // Success response
+    // Réponse de succès
     res.status(201).json({ success: true, message: 'Leçon créée avec succès !', lessonId: results.insertId });
   });
 });
+
 
 
 router.get('/lessonsById/:id', (req, res) => {

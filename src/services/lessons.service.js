@@ -1,6 +1,6 @@
 import axios from 'axios';
 export const createLesson = async ({ title, category, content, id_creator, email_creator }) => {
-  const response = await fetch('http://localhost:3001/api/lessons', { // Assurez-vous que c'est bien le bon chemin
+  const response = await fetch('http://localhost:3001/api/lessons', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -33,7 +33,7 @@ const CreateLessons = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
+    // Validation basique
     if (!title || !category || !content || !userId || !userEmail) {
       setMessage('Tous les champs sont obligatoires.');
       return;
