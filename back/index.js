@@ -29,6 +29,7 @@ app.use(cors());
 // Routes
 app.use('/api', router);
 
+
 // Stripe
 const YOUR_DOMAIN = 'http://localhost:3000';
 app.post('/create-checkout-session', async (req, res) => {

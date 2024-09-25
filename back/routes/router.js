@@ -177,6 +177,27 @@ router.get('/lessonsById/:id', (req, res) => {
   });
 });
 
+router.put('/editLessons/:id', async (req, res) => {
+  const { id } = req.params; 
+  const { title, content } = req.body; 
+
+  try {
+      const query = 'UPDATE lessons SET title = ?, content = ? WHERE id = ?';
+      connection.query(query, [title, content, id], (err, results) => {
+          if (err) {
+              return res.status(500).json({ message: 'Erreur lors de la mise à jour de la leçon.' });
+          }
+          if (results.affectedRows === 0) {
+              return res.status(404).json({ message: 'Leçon non trouvée.' });
+          }
+          res.status(200).json({ message: 'Leçon mise à jour avec succès.' });
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur du serveur', error });
+  }
+});
+
 // all teacher
 router.get('/users_prof', getAllUsers);
 
