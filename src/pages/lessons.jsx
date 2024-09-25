@@ -11,8 +11,8 @@ const LessonsDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null); 
-  const [editMode, setEditMode] = useState(false); // État pour gérer le mode édition
-  const [formData, setFormData] = useState({ title: '', content: '' }); // Données du formulaire
+  const [editMode, setEditMode] = useState(false); 
+  const [formData, setFormData] = useState({ title: '', content: '' }); 
 
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const LessonsDetail = () => {
 
     fetchLessons();
   }, [id]);
-
+//formdata update
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -59,8 +59,8 @@ const LessonsDetail = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      await updateLesson(id, formData, token); // Make sure `id` is passed correctly
-      setLesson({ ...lesson, ...formData }); // Update the lesson state
+      await updateLesson(id, formData, token); 
+      setLesson({ ...lesson, ...formData }); // Update the lesson 
       setEditMode(false); // Exit edit mode
     } catch (err) {
       setError(err.response ? err.response.data.message : err.message);

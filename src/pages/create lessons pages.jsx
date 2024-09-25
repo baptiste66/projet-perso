@@ -33,13 +33,13 @@ const CreateLessons = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation basique
+    // regex
     if (!title || !category || !content || !userId || !userEmail) {
       setMessage('Tous les champs sont obligatoires.');
       return;
     }
 
-    try {
+    try {//service
       const response = await createLesson({ 
         title, 
         category, 
@@ -50,7 +50,7 @@ const CreateLessons = () => {
 
       if (response.success) {
         setMessage('Leçon créée avec succès !');
-        navigate('/index'); // Redirection vers la liste des leçons
+        navigate('/index'); 
       } else {
         setMessage(response.message || 'Une erreur est survenue lors de la création de la leçon.');
       }

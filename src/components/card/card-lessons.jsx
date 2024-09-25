@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllLessons } from '../../services/lessons.service'; // Correct the import path
+import { getAllLessons } from '../../services/lessons.service'; 
 import { Link } from 'react-router-dom';
 
 const Cards = () => {
@@ -10,7 +10,7 @@ const Cards = () => {
   useEffect(() => {
     const fetchLessons = async () => {
       try {
-        const data = await getAllLessons(); // Correct the function name
+        const data = await getAllLessons(); 
         setLessons(data);
       } catch (err) {
         setError(err.response ? err.response.data.message : err.message);
@@ -20,7 +20,7 @@ const Cards = () => {
     };
   
     fetchLessons();
-  }, []); // Add an empty dependency array
+  }, []); 
 
   if (loading) return <p>Chargement...</p>;
   if (error) return <p>Erreur: {error}</p>;
@@ -28,7 +28,7 @@ const Cards = () => {
   return (
     <div className="cards-container">
       {lessons.length === 0 ? (
-        <p>Aucune leçon trouvée.</p> // Updated message to reflect lessons instead of users
+        <p>Aucune leçon trouvée.</p> 
       ) : (
         lessons.map((lesson) => ( 
           <Link to={`/lessons/${lesson.id}`} key={lesson.id} className="card-link">

@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const  connection  = require('../connection/db');
 const router = express.Router();
-const { updateUser, getAllUsers, getAllLessons }= require ('../controllers/controllers');
+const { updateUser, getAllUsers, getAllLessons, getAllTeachers }= require ('../controllers/controllers');
 
 
 router.post('/signup', async (req, res) => {
@@ -14,7 +14,7 @@ router.post('/signup', async (req, res) => {
     const { email, password, address, birthdate, educationLevel, userType, latitude, longitude } = req.body;
     const profileImage = req.files ? req.files.profileImage : null;
     
-    // Validation des champs
+    // regex
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ message: 'Adresse email invalide' });
     }
@@ -36,22 +36,21 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Image de profil manquante' });
     }
 
-    // Vérification de l'existence de l'utilisateur avec le même email et userType
     connection.query(`SELECT * FROM users WHERE email = ? AND userType = ?`, [email, userType], async (err, results) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
       if (results.length > 0) {
-        return res.status(409).json({ message: 'Utilisateur déjà existant avec ce type' });
+        return res.status(409).json({ message: 'Utilisateur déjà existant avec cette email' });
       }
 
-      // Hashage du mot de passe
+      // Hashage 
       const hashedPassword = await bcrypt.hash(password, 8);
       const profileImageBase64 = profileImage.data.toString('base64');
 
      
 
-      // Insertion dans la table `users` avec `userType`
+      // go to db
       connection.query(
         `INSERT INTO users (email, password, birthdate, address, educationLevel, profileImage, userType, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [email, hashedPassword, birthdate, address, educationLevel, profileImageBase64, userType, latitude, longitude],
@@ -60,7 +59,7 @@ router.post('/signup', async (req, res) => {
             return res.status(500).json({ error: err.message });
           }
 
-          // Génération du token
+          //  token
           const token = jwt.sign({ id: result.insertId, userType }, 'your_jwt_secret', { expiresIn: '24h' });
           res.status(201).json({ message: 'Utilisateur créé avec succès', token });
         }
@@ -76,7 +75,7 @@ router.post('/signup', async (req, res) => {
 router.post('/login', (req, res) => {
   const { email, password, userType } = req.body;
  
-  // Recherche de l'utilisateur dans la table `users`
+  // where
   connection.query(`SELECT * FROM users WHERE email = ? AND userType = ?`, [email, userType], async (err, results) => {
     if (err) {
       return res.status(500).json({ message: 'Erreur serveur' });
@@ -87,13 +86,13 @@ router.post('/login', (req, res) => {
 
     const user = results[0];
 
-    // Vérification du mot de passe
+    // decrypt
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Mot de passe incorrect' });
     }
 
-    // Génération du token JWT
+    // token 
     const token = jwt.sign({ id: user.id, userType }, 'your_jwt_secret', { expiresIn: '24h' });
     res.status(200).json({ message: 'Connexion réussie', token });
   });
@@ -106,13 +105,13 @@ router.get('/protected-route', authenticateToken, (req, res) => {
   res.json({ message: 'Vous avez accès à cette route protégée!' });
 });
 
-//modificate profile
+//editprofile
 
 router.put('/profile', authenticateToken, async (req, res) => {
   try {
     const { email, birthdate, address, educationLevel, profileImage } = req.body;
 
-    // Validation des champs
+    // regex
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ message: 'Adresse email invalide' });
     }
@@ -128,10 +127,9 @@ router.put('/profile', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: "Niveau d'étude manquant" });
     }
 
-    // Récupérer le type d'utilisateur à partir du token
     const userType = req.user.userType; 
 
-    // Mise à jour de l'utilisateur
+    // update
     const updatedUser = await updateUser(req.user.id, userType, { email, birthdate, address, educationLevel, profileImage });
 
     return res.status(200).json({ message: 'Profil mis à jour avec succès', updatedUser });
@@ -141,24 +139,22 @@ router.put('/profile', authenticateToken, async (req, res) => {
   }
 });
 
-// Exemple de route pour créer une leçon dans Express.js
+// post lessons 
 router.post('/lessons', (req, res) => {
   const { title, category, content, id_creator, email_creator } = req.body;
 
-  // Validation des données entrantes
+  // regex
   if (!title || !category || !content || !id_creator || !email_creator) {
     return res.status(400).json({ success: false, message: 'Tous les champs sont obligatoires.' });
   }
 
-  // Requête SQL pour insérer une nouvelle leçon
+  // go to db
   const query = 'INSERT INTO lessons (title, category, content, id_creator, email_creator) VALUES (?, ?, ?, ?, ?)';
   connection.query(query, [title, category, content, id_creator, email_creator], (err, results) => {
     if (err) {
       console.error('Erreur lors de l\'insertion dans la base de données:', err);
       return res.status(500).json({ success: false, message: 'Une erreur est survenue lors de la création de la leçon.' });
     }
-
-    // Réponse de succès
     res.status(201).json({ success: true, message: 'Leçon créée avec succès !', lessonId: results.insertId });
   });
 });
@@ -167,7 +163,7 @@ router.post('/lessons', (req, res) => {
 
 router.get('/lessonsById/:id', (req, res) => {
   const { id } = req.params;
-  const query = 'SELECT * FROM lessons WHERE id = ?'; // Adapter selon ta base de données
+  const query = 'SELECT * FROM lessons WHERE id = ?'; 
   connection.query(query, [id], (err, results) => {
       if (err) {
           return res.status(500).json({ message: 'Erreur de récupération de la leçon.' });
@@ -175,10 +171,12 @@ router.get('/lessonsById/:id', (req, res) => {
       if (results.length === 0) {
           return res.status(404).json({ message: 'Leçon non trouvée.' });
       }
-      res.status(200).json(results[0]); // Retourner la leçon
+      res.status(200).json(results[0]); 
   });
 });
 
+
+//limiter mauvais id_creator
 router.put('/editLessons/:id', async (req, res) => {
   const { id } = req.params; 
   const { title, content } = req.body; 
@@ -197,6 +195,64 @@ router.put('/editLessons/:id', async (req, res) => {
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Erreur du serveur', error });
+  }
+});
+
+
+const findClosestTeacher = async (lat, lon) => {
+  //const [users, setUsers] = useState([]);
+  const teachers = await getAllTeachers(); 
+ //const teachers = data.filter(user => user.userType === 'teacher');
+ //setUsers(teachers);
+  let closestTeacher = null;
+  let closestDistance = Infinity;
+
+  
+  teachers.forEach(teacher => {
+      const distance = calculateDistance(lat, lon, teacher.latitude, teacher.longitude); 
+      if (distance < closestDistance) {
+          closestDistance = distance;
+          closestTeacher = teacher;
+      }
+  });
+
+  
+  return closestTeacher;
+};
+
+// calc 1 = user 2=teacher
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const toRad = (value) => (Math.PI / 180) * value;
+
+  const R = 6371; 
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; //km
+};
+
+router.get('/closest-teacher', async (req, res) => {
+  const { lat, lon } = req.query;
+  if (!lat || !lon) {
+    return res.status(400).json({ error: 'Latitude et longitude requises' });
+  }
+
+  try {
+    const closestTeacher = await findClosestTeacher(lat, lon); 
+    if (closestTeacher) {
+      res.json({ teacher: closestTeacher });
+    } else {
+      res.status(404).json({ message: 'Aucun professeur trouvé à proximité' });
+    }
+  } catch (error) {
+    console.error('Erreur lors de la recherche du professeur le plus proche:', error);
+    res.status(500).json({ error: 'Erreur lors de la recherche' });
   }
 });
 

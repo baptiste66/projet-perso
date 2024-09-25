@@ -30,7 +30,7 @@ function Signin() {
     const [message, setMessage] = useState('');
     const { login } = useAuth();
     const navigate= useNavigate()
-
+//base 64
     const handleImageChange = (e, setProfileImage) => {
         const file = e.target.files[0];
         if (file && file.size > 50 * 1024 * 1024) { // 50 MB
@@ -39,6 +39,7 @@ function Signin() {
         }
         setProfileImage(file); 
     };
+//api pos
   const getAddressFromCoordinates = async (latitude, longitude) => {
     const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
 
@@ -56,7 +57,7 @@ function Signin() {
       console.error('Erreur lors du géocodage inversé:', error);
     }
   };
- // Function to handle student geolocation
+ //student pos
  const handleStudentGeolocation = () => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -88,7 +89,7 @@ const handleTeacherGeolocation = () => {
       }
     );
 };
-       // Function to convert coordinates to address
+       
 
 
     const handleSubmit = async (e, userType) => {
@@ -133,10 +134,6 @@ const handleTeacherGeolocation = () => {
           setMessage("Niveau d'étude manquant");
           return;
         }
-       // if (!coords || !coords.latitude || !coords.longitude) {
-         //   setMessage('Les coordonnées doivent être fournies.');
-           // return;
-         // }
         if (!profileImage) {
           setMessage('Image de profil manquante');
           return;

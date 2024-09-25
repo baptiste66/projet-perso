@@ -136,6 +136,7 @@ const Profile = () => {
                   <p><strong>Email:</strong> {user.email}</p>
                   <p><strong>Date de naissance:</strong> {formatDate(user.birthdate)}</p>
                   <p><strong>Adresse:</strong> {user.address}</p>
+                  <p>{user.latitude}</p>
                   <p><strong>Niveau d'étude:</strong> {user.educationLevel}</p>
                   <button onClick={() => setEditMode(true)}>Modifier</button>
                 </>

@@ -5,6 +5,7 @@ connection.query = util.promisify(connection.query);
 
 
 const updateUser = async (userId, updateData) => {
+  
   const { email, birthdate, address, educationLevel, profileImage } = updateData;
   
   const query = `
@@ -12,6 +13,7 @@ const updateUser = async (userId, updateData) => {
     SET email = ?, birthdate = ?, address = ?, educationLevel = ?, profileImage = ?
     WHERE id = ?
   `;
+  //[]
   const values = [email, birthdate, address, educationLevel, profileImage, userId];
 
   try {
@@ -23,13 +25,14 @@ const updateUser = async (userId, updateData) => {
   }
 };
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req,res) => {
   const { userType } = req.query; 
 
   let query = 'SELECT * FROM users';
   let values = [];
 
   if (userType) {
+    
     query += ' WHERE userType = ?';
     values.push(userType);
   }
@@ -41,6 +44,17 @@ const getAllUsers = async (req, res) => {
     console.error('Erreur lors de la récupération des utilisateurs:', error);
     res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs' });
   }
+};
+//suprr
+const getAllTeachers = async () => {
+  return new Promise((resolve, reject) => {
+    connection.query('SELECT * FROM users WHERE userType = ?', ['teacher'], (err, results) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(results);
+    });
+  });
 };
 
 const getAllLessons = async (req, res) => {
@@ -56,9 +70,10 @@ const getAllLessons = async (req, res) => {
   }
 };
 
-// Export des fonctions
+
 module.exports = {
   getAllUsers,
   updateUser,
-  getAllLessons
+  getAllLessons,
+  getAllTeachers
 };
