@@ -21,10 +21,16 @@ function Signin() {
     const [teacherAddress, setTeacherAddress] = useState('');
     const [teacherEducationLevel, setTeacherEducationLevel] = useState('');
     const [teacherProfileImage, setTeacherProfileImage] = useState(null);
+
+    const [studentLatitude, setStudentLatitude] = useState(null);
+    const [studentLongitude, setStudentLongitude] = useState(null);
+    const [teacherLatitude, setTeacherLatitude] = useState(null);
+    const [teacherLongitude, setTeacherLongitude] = useState(null);
     
     const [message, setMessage] = useState('');
     const { login } = useAuth();
     const navigate= useNavigate()
+
     const handleImageChange = (e, setProfileImage) => {
         const file = e.target.files[0];
         if (file && file.size > 50 * 1024 * 1024) { // 50 MB
@@ -33,10 +39,61 @@ function Signin() {
         }
         setProfileImage(file); 
     };
+  const getAddressFromCoordinates = async (latitude, longitude) => {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.address) {
+        const address = `${data.address.road || ''}, ${data.address.city || data.address.town || data.address.village || ''}, ${data.address.state || ''}, ${data.address.country || ''}`;
+        return address;
+      } else {
+        console.log('Impossible de trouver une adresse.');
+        return null;
+      }
+    } catch (error) {
+      console.error('Erreur lors du géocodage inversé:', error);
+    }
+  };
+ // Function to handle student geolocation
+ const handleStudentGeolocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const address = await getAddressFromCoordinates(latitude, longitude);
+        setStudentLatitude(latitude);
+        setStudentLongitude(longitude);
+        if (address) setStudentAddress(address);
+      },
+      (error) => {
+        console.error('Erreur de géolocalisation :', error);
+        setMessage('Erreur lors de l\'obtention de la localisation.');
+      }
+    );
+};
+
+const handleTeacherGeolocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const address = await getAddressFromCoordinates(latitude, longitude);
+        setTeacherLatitude(latitude);
+        setTeacherLongitude(longitude);
+        if (address) setTeacherAddress(address);
+      },
+      (error) => {
+        console.error('Erreur de géolocalisation :', error);
+        setMessage('Erreur lors de l\'obtention de la localisation.');
+      }
+    );
+};
+       // Function to convert coordinates to address
+
 
     const handleSubmit = async (e, userType) => {
         e.preventDefault();
-        let email, password, birthdate, address, educationLevel, profileImage;
+        let email, password, birthdate, address, educationLevel, profileImage,latitude, longitude ;
       
         // Set form data based on userType
         if (userType === 'student') {
@@ -46,6 +103,8 @@ function Signin() {
           address = studentAddress;
           educationLevel = studentEducationLevel;
           profileImage = studentProfileImage;
+          latitude = studentLatitude;
+          longitude = studentLongitude
         } else if (userType === 'teacher') {
           email = teacherEmail;
           password = teacherPassword;
@@ -53,6 +112,8 @@ function Signin() {
           address = teacherAddress;
           educationLevel = teacherEducationLevel;
           profileImage = teacherProfileImage;
+          latitude = teacherLatitude;
+          longitude = teacherLongitude
         }
       
         // regex basic 
@@ -72,13 +133,17 @@ function Signin() {
           setMessage("Niveau d'étude manquant");
           return;
         }
+       // if (!coords || !coords.latitude || !coords.longitude) {
+         //   setMessage('Les coordonnées doivent être fournies.');
+           // return;
+         // }
         if (!profileImage) {
           setMessage('Image de profil manquante');
           return;
         }
       
         try {
-          const data = await signup(email, password, birthdate, address, educationLevel, profileImage, userType);
+          const data = await signup(email, password, birthdate, address, educationLevel, profileImage, userType, latitude, longitude );
           if (data.token) {
             await login(data.token);
             console.log('Jeton stocké:', localStorage.getItem('token'));
@@ -136,16 +201,20 @@ function Signin() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="studentAddress">Adresse :</label>
-                                <input 
-                                    type="text" 
-                                    id="studentAddress" 
-                                    name="studentAddress" 
-                                    value={studentAddress}
-                                    onChange={(e) => setStudentAddress(e.target.value)}
-                                    required 
-                                />
-                            </div>
+  <label htmlFor="studentAddress">Adresse :</label>
+  <input 
+    type="text" 
+    id="studentAddress" 
+    name="studentAddress" 
+    value={studentAddress}
+    onChange={(e) => setStudentAddress(e.target.value)}
+    required 
+    readOnly // Empêche la modification manuelle
+  />
+  <button type="button" onClick={handleStudentGeolocation}>
+    Obtenir ma localisation
+  </button>
+</div>
                             <div className="form-group">
                                 <label htmlFor="studentEducationLevel">Niveau d'étude :</label>
                                 <select 
@@ -215,16 +284,20 @@ function Signin() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="teacherAddress">Adresse :</label>
-                                <input 
-                                    type="text" 
-                                    id="teacherAddress" 
-                                    name="teacherAddress" 
-                                    value={teacherAddress}
-                                    onChange={(e) => setTeacherAddress(e.target.value)}
-                                    required 
-                                />
-                            </div>
+  <label htmlFor="teacherAddress">Adresse :</label>
+  <input 
+    type="text" 
+    id="teacherAddress" 
+    name="teacherAddress" 
+    value={teacherAddress}
+    onChange={(e) => setTeacherAddress(e.target.value)}
+    required 
+    readOnly
+  />
+  <button type="button" onClick={handleTeacherGeolocation}>
+    Obtenir ma localisation
+  </button>
+</div>
                             <div className="form-group">
                                 <label htmlFor="teacherEducationLevel">Niveau d'étude :</label>
                                 <select 

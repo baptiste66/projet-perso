@@ -11,9 +11,9 @@ const { updateUser, getAllUsers, getAllLessons }= require ('../controllers/contr
 
 router.post('/signup', async (req, res) => {
   try {
-    const { email, password, address, birthdate, educationLevel, userType } = req.body;
+    const { email, password, address, birthdate, educationLevel, userType, latitude, longitude } = req.body;
     const profileImage = req.files ? req.files.profileImage : null;
-    console.log('Type d\'utilisateur reçu:', userType);
+    
     // Validation des champs
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ message: 'Adresse email invalide' });
@@ -49,10 +49,12 @@ router.post('/signup', async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 8);
       const profileImageBase64 = profileImage.data.toString('base64');
 
+     
+
       // Insertion dans la table `users` avec `userType`
       connection.query(
-        `INSERT INTO users (email, password, birthdate, address, educationLevel, profileImage, userType) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [email, hashedPassword, birthdate, address, educationLevel, profileImageBase64, userType],
+        `INSERT INTO users (email, password, birthdate, address, educationLevel, profileImage, userType, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [email, hashedPassword, birthdate, address, educationLevel, profileImageBase64, userType, latitude, longitude],
         (err, result) => {
           if (err) {
             return res.status(500).json({ error: err.message });
@@ -73,7 +75,7 @@ router.post('/signup', async (req, res) => {
 // Login
 router.post('/login', (req, res) => {
   const { email, password, userType } = req.body;
-  console.log('Type d\'utilisateur reçu:', userType);
+ 
   // Recherche de l'utilisateur dans la table `users`
   connection.query(`SELECT * FROM users WHERE email = ? AND userType = ?`, [email, userType], async (err, results) => {
     if (err) {

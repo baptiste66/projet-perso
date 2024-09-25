@@ -26,7 +26,7 @@ const Cards = () => {
     return null; 
   }
 
-  console.log(userType); 
+  
 
   return (
     <div className="cards-container">

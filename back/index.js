@@ -5,12 +5,16 @@ const fileUpload = require('express-fileupload');
 const dotenv = require('dotenv');
 const router = require('./routes/router');
 const connection = require('./connection/db');
+
+
 dotenv.config();
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 console.log(process.env.STRIPE_KEY)
 
 const app = express();
 const PORT = 3001;
+
+
 
 // image size
 app.use(express.json({ limit: '50mb' }));

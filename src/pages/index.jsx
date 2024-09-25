@@ -7,8 +7,9 @@ import CardCreateLessons from "../components/card/card-create-lessons"
 import CardLessons from "../components/card/card-lessons"
 import "../style/index.css"
 function Index() {
+  
 
-
+ 
     return (
         <>
           
@@ -31,6 +32,8 @@ function Index() {
                     Notre plateforme innovante met en relation des élèves motivés et des professeurs 
                     qualifiés pour offrir un soutien personnalisé et adapté aux besoins de chacun.</p>
                     </section>
+                    <Link to="/user/:id">
+                <button className='button-localisation'>Le professeur le plus proche de chez vous §</button></Link>
                     <section className='teacher-cards'>
                     <h2>Nos Professeurs:</h2>
                     <Card/>
